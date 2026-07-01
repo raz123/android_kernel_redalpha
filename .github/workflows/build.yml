@@ -83,6 +83,7 @@ jobs:
           set -euo pipefail
           make O=out "$DEFCONFIG"
           make O=out olddefconfig
+          scripts/config --file out/.config --disable IKHEADERS
           make -j"$(nproc)" O=out \
             CC=clang \
             LD=ld.lld \
