@@ -65,14 +65,6 @@
 #define MAX_PATH_LEN		64
 #define MAX_DEVICES		8
 
-/*
- * For superblock
- */
-struct f2fs_device {
-	__u8 path[MAX_PATH_LEN];
-	__le32 total_segments;
-} __packed;
-
 /* reason of stop_checkpoint */
 enum stop_cp_reason {
 	STOP_CP_REASON_SHUTDOWN,
@@ -108,6 +100,14 @@ enum f2fs_error {
 };
 
 #define MAX_F2FS_ERRORS			16
+
+/*
+ * For superblock
+ */
+struct f2fs_device {
+	__u8 path[MAX_PATH_LEN];
+	__le32 total_segments;
+} __packed;
 
 struct f2fs_super_block {
 	__le32 magic;			/* Magic Number */
@@ -207,7 +207,7 @@ struct f2fs_checkpoint {
 	unsigned char alloc_type[MAX_ACTIVE_LOGS];
 
 	/* SIT and NAT version bitmap */
-	unsigned char sit_nat_version_bitmap[];
+	unsigned char sit_nat_version_bitmap[1];
 } __packed;
 
 #define CP_CHKSUM_OFFSET	4092	/* default chksum offset in checkpoint */
@@ -313,10 +313,7 @@ struct f2fs_inode {
 			__le64 i_compr_blocks;	/* # of compressed blocks */
 			__u8 i_compress_algorithm;	/* compress algorithm */
 			__u8 i_log_cluster_size;	/* log of cluster size */
-			__le16 i_compress_flag;		/* compress flag */
-						/* 0 bit: chksum flag
-						 * [10,15] bits: compress level
-						 */
+			__le16 i_padding;		/* padding */
 			__le32 i_extra_end[0];	/* for attribute size calculation */
 		} __packed;
 		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
